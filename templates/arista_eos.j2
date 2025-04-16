@@ -37,7 +37,7 @@ interface {{ interface.name }}
    mtu {{ interface.mtu }}
 {% endif %}
 {% for ipaddress in interface.ip_addresses %}
-   ip address {{ ipaddress }}
+   ip address {{ ipaddress.address }}
 {% endfor %}
 !
 {% endfor %}
