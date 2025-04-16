@@ -37,7 +37,11 @@ interface {{ interface.name }}
    mtu {{ interface.mtu }}
 {% endif %}
 {% for ipaddress in interface.ip_addresses %}
+{% if ipaddress.ip_version == 4 %}
    ip address {{ ipaddress.address }}
+{% elif ipaddress.ip_version == 6 %}
+   ipv6 address {{ ipaddress.address }}
+{% endif %}
 {% endfor %}
 !
 {% endfor %}
