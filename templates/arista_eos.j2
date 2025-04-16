@@ -48,16 +48,19 @@ interface {{ interface.name }}
 !
 ip routing
 !
-router bgp 65001
-   router-id 10.0.250.1
-   neighbor 203.0.113.2 remote-as 65002
-   neighbor 203.0.113.2 update-source Ethernet1
-   neighbor 203.0.113.2 description eBGP to Site B
+{% for bgp_routing_instance in bgp_routing_instances %}
+router bgp {{ bgp_routing_instance.autonomous_system.asn }}
+   router-id {{ bgp_routing_instance.router_id | ipaddress_interface("ip") }}
+{% for endpoint in bgp_routing_instance.endpoints %}
+   neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} remote-as {{ endpoint.peer.autonomous_system.asn }}
+   neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} update-source {{ endpoint.source_interface.name }}
+   neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} description eBGP to {{ endpoint.peer.autonomous_system.asn }}
    !
    address-family ipv4
-      neighbor 203.0.113.2 activate
-      network 10.0.250.1/32
+      neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} activate
+      network {{ endpoint.source_ip }}
 !
+{% endfor %}
 router multicast
    ipv4
       software-forwarding kernel
@@ -65,4 +68,3 @@ router multicast
    ipv6
       software-forwarding kernel
 !
-end
