@@ -1,0 +1,64 @@
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 {{ config_context.admin_password }}
+!
+management api http-commands
+   no shutdown
+!
+switchport default mode routed
+!
+no service interface inactive port-id allocation disabled
+!
+transceiver qsfp default-mode 4x10G
+!
+service routing protocols model multi-agent
+!
+hostname {{ hostname }}
+!
+spanning-tree mode mstp
+!
+system l1
+   unsupported speed action error
+   unsupported error-correction action error
+!
+management api gnmi
+   transport grpc default
+!
+management api netconf
+   transport ssh default
+!
+{% for interface in interfaces %}
+interface {{ interface.name }}
+{% if interface.description %}
+   description {{ interface.description }}
+{% endif %}
+{% if interface.mtu %}
+   mtu {{ interface.mtu }}
+{% endif %}
+{% for ipaddress in interface.ip_addresses %}
+   ip address {{ ipaddress }}
+{% endfor %}
+!
+{% endfor %}
+!
+ip routing
+!
+router bgp 65001
+   router-id 10.0.250.1
+   neighbor 203.0.113.2 remote-as 65002
+   neighbor 203.0.113.2 update-source Ethernet1
+   neighbor 203.0.113.2 description eBGP to Site B
+   !
+   address-family ipv4
+      neighbor 203.0.113.2 activate
+      network 10.0.250.1/32
+!
+router multicast
+   ipv4
+      software-forwarding kernel
+   !
+   ipv6
+      software-forwarding kernel
+!
+end
