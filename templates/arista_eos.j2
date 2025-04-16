@@ -55,6 +55,7 @@ router bgp {{ bgp_routing_instance.autonomous_system.asn }}
    neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} remote-as {{ endpoint.peer.autonomous_system.asn }}
    neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} update-source {{ endpoint.source_interface.name }}
    neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} description eBGP to {{ endpoint.peer.autonomous_system.asn }}
+{% endfor %}
    !
    address-family ipv4
       neighbor {{ endpoint.peer.source_ip | ipaddress_interface("ip") }} activate
