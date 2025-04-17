@@ -50,7 +50,7 @@ ip routing
 !
 {% for bgp_routing_instance in bgp_routing_instances %}
 router bgp {{ bgp_routing_instance.autonomous_system.asn }}
-   router-id {{ bgp_routing_instance.router_id | ipaddress_interface("ip") }}
+   router-id {{ bgp_routing_instance.router_id.address | ipaddress_interface("ip") }}
 {% for endpoint in bgp_routing_instance.endpoints %}
    neighbor {{ endpoint.peer.source_ip.address | ipaddress_interface("ip") }} remote-as {{ endpoint.peer.autonomous_system.asn }}
    neighbor {{ endpoint.peer.source_ip.address | ipaddress_interface("ip") }} update-source {{ endpoint.source_interface.name }}
