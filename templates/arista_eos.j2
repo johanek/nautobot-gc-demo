@@ -58,8 +58,10 @@ router bgp {{ bgp_routing_instance.autonomous_system.asn }}
 {% endfor %}
    !
    address-family ipv4
+{%    for endpoint in bgp_routing_instance.endpoints %}
       neighbor {{ endpoint.peer.source_ip.address | ipaddress_interface("ip") }} activate
-      network {{ endpoint.source_ip.address }}
+{%    endfor %}
+      network {{ bgp_routing_instance.router_id.address }}
 !
 {% endfor %}
 router multicast
